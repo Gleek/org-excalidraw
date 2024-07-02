@@ -96,7 +96,8 @@
   (when (string-equal (cadr event)  "renamed")
     (let ((filename (cadddr event)))
       (when (string-suffix-p ".excalidraw" filename)
-        (shell-command (org-excalidraw--shell-cmd-to-svg filename))))))
+        (shell-command (concat (org-excalidraw--shell-cmd-to-svg filename) " 2> /dev/null") nil nil)
+        (org-display-inline-images)))))
 
 ;;;###
 ;;;autoload
@@ -105,7 +106,7 @@
   (interactive)
   (let* ((filename (format "%s.excalidraw" (org-id-uuid)))
          (path (expand-file-name filename org-excalidraw-directory))
-         (link (format "[[excalidraw:%s.svg]]" path)))
+         (link (format "[[file:%s.svg]]" path)))
     (org-excalidraw--validate-excalidraw-file path)
     (insert link)
     (with-temp-file path (insert org-excalidraw-base))
@@ -120,14 +121,8 @@
     (error
      "Excalidraw directory %s does not exist"
      org-excalidraw-directory))
-  (file-notify-add-watch org-excalidraw-directory '(change) 'org-excalidraw--handle-file-change)
-  (org-link-set-parameters "excalidraw"
-                           :follow 'org-excalidraw--open-file-from-svg
-                           :image-data-fun (lambda (_protocol link _desc)
-                                             (with-temp-buffer (insert-file-contents-literally link)
-                                                               (buffer-substring-no-properties
-                                                                (point-min)
-                                                                (point-max))))))
+  (push '("\\.excalidraw.svg\\'" . "echo '%s' | sed 's/.svg//' | xargs open") org-file-apps)
+  (file-notify-add-watch org-excalidraw-directory '(change) 'org-excalidraw--handle-file-change))
 
 
 (provide 'org-excalidraw)
