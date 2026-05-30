@@ -17,7 +17,17 @@
 
   (it "formats a command compatible with excalirender"
     (expect (org-excalidraw--shell-cmd-to-svg excal-path) :to-equal
-            "excalirender home/excalidraw\\ drawings/my-drawing.excalidraw -o home/excalidraw\\ drawings/my-drawing.excalidraw.svg")))
+            "excalirender --scale 2 home/excalidraw\\ drawings/my-drawing.excalidraw -o home/excalidraw\\ drawings/my-drawing.excalidraw.svg"))
+
+  (it "formats a png export command"
+    (let ((org-excalidraw-export-format "png"))
+      (expect (org-excalidraw--shell-cmd-to-image excal-path) :to-equal
+              "excalirender --scale 2 home/excalidraw\\ drawings/my-drawing.excalidraw -o home/excalidraw\\ drawings/my-drawing.excalidraw.png")))
+
+  (it "includes extra export arguments"
+    (let ((org-excalidraw-export-arguments '("--scale" "2" "--dark" "--background" "#111111")))
+      (expect (org-excalidraw--shell-cmd-to-image excal-path) :to-equal
+              "excalirender --scale 2 --dark --background \\#111111 home/excalidraw\\ drawings/my-drawing.excalidraw -o home/excalidraw\\ drawings/my-drawing.excalidraw.svg"))))
 
 (describe
   "checks external dependencies on initialization"

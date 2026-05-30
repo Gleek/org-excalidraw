@@ -39,7 +39,7 @@ For me, this synchronization makes both tools more useful: I can easily draw in 
 
 Excalidraw is a web application. `org-excalidraw` takes advantage of the File Handling API to register Excalidraw as a file handler for `.excalidraw` files.
 
-It also requires a few external dependencies outside of Emacs and `org-mode` for converting between excalidraw json and svg.
+It also requires a few external dependencies outside of Emacs and `org-mode` for converting between excalidraw json and image previews.
 
 `org-excalidraw` has only been tested against Chromium based browsers.
 
@@ -59,14 +59,27 @@ Using `use-pacakge`:
 
 `org-excalidraw` requires external dependencies outside of Emacs and `org-mode`.
 
-1. We need to programmatically export excalidraw files to `.svg` for display.
+1. We need to programmatically export excalidraw files to `.svg` or `.png` for display.
 org-excalidraw depends on [excalirender](https://github.com/JonRC/excalirender) to do this. It must be available on your system's PATH.
 
-   Build and install `excalirender` from its repository, then make sure the binary is named `excalirender` and is on your PATH. For the macOS ARM64, either use the docker command  or, use the [gleek/excalirender fork](https://github.com/gleek/excalirender) to build a single binary.
+   Build and install `excalirender` from its repository, then make sure the binary is named `excalirender` and is on your PATH. For macOS ARM64, either use the Docker command or use the [gleek/excalirender fork](https://github.com/gleek/excalirender) to build a single binary.
 
    You can customize the exporter path with `org-excalidraw-export-program`.
+   The rendered preview format defaults to SVG and can be changed to PNG:
 
-2. To correctly display the produced SVGs, your system may need the Excalidraw fonts installed, depending on your SVG viewer and exporter options.
+   ```elisp
+   (setq org-excalidraw-export-format "png")
+   ```
+
+   Exports use `--scale 2` by default so PNG previews are sharper in Emacs. Extra exporter arguments can be passed with `org-excalidraw-export-arguments`. For example, `excalirender` supports dark mode and custom backgrounds:
+
+   ```elisp
+   (setq org-excalidraw-export-arguments '("--scale" "2" "--dark"))
+   ;; or
+   (setq org-excalidraw-export-arguments '("--scale" "2" "--background" "#111111"))
+   ```
+
+2. To correctly display SVG previews, your system may need the Excalidraw fonts installed, depending on your SVG viewer and exporter options. PNG previews are rasterized by `excalirender`, so they preserve the rendered font appearance in Emacs.
 
 3. Install [excalidraw](https://www.excalidraw.com) as a PWA using Chrome. After doing this, you should be able to launch excalidraw from your system as if it was an application.
 
@@ -85,4 +98,4 @@ This does 2 things:
 2. Inserts a link to this file with a custom `excalidraw:` type. The `excalidraw:` link type both displays the image inline and will open the drawing in excalidraw for editing when followed.
 
 
-As long as `excalirender` is available and configured correctly, all changes saved in the excalidraw application will update the corresponding svg files.
+As long as `excalirender` is available and configured correctly, all changes saved in the excalidraw application will update the corresponding preview image files.
