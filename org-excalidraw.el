@@ -69,6 +69,11 @@
   :type 'string
   :group 'org-excalidraw)
 
+(defcustom org-excalidraw-export-program "excalirender"
+  "Program used to export excalidraw files to SVG."
+  :type 'string
+  :group 'org-excalidraw)
+
 (defun org-excalidraw--validate-excalidraw-file (path)
   "Validate the excalidraw file at PATH is usable."
   (unless (string-suffix-p ".excalidraw" path)
@@ -77,7 +82,10 @@
 
 (defun org-excalidraw--shell-cmd-to-svg (path)
   "Construct shell cmd for converting excalidraw file with PATH to svg."
-  (concat "excalidraw_export --rename_fonts=true " (format "\"%s\"" path)))
+  (format "%s %s -o %s"
+          (shell-quote-argument org-excalidraw-export-program)
+          (shell-quote-argument path)
+          (shell-quote-argument (concat path ".svg"))))
 
 (defun org-excalidraw--shell-cmd-open (path os-type)
   "Construct shell cmd to open excalidraw file with PATH for OS-TYPE."

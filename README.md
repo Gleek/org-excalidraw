@@ -60,11 +60,13 @@ Using `use-pacakge`:
 `org-excalidraw` requires external dependencies outside of Emacs and `org-mode`.
 
 1. We need to programmatically export excalidraw files to `.svg` for display.
-org-excalidraw depends on [excalidraw_export](https://github.com/Timmmm/excalidraw_export) to do this. It must be available on your system's PATH.
-NOTE: you may need to install some dependencies like `canvas` for this package to work correctly.
+org-excalidraw depends on [excalirender](https://github.com/JonRC/excalirender) to do this. It must be available on your system's PATH.
 
-2. To correctly display the produced SVGs, your system needs some fonts installed.
-[The excalidraw_export repo provides these as well](https://github.com/Timmmm/excalidraw_export/tree/master/src).
+   Build and install `excalirender` from its repository, then make sure the binary is named `excalirender` and is on your PATH. For the macOS ARM64, either use the docker command  or, use the [gleek/excalirender fork](https://github.com/gleek/excalirender) to build a single binary.
+
+   You can customize the exporter path with `org-excalidraw-export-program`.
+
+2. To correctly display the produced SVGs, your system may need the Excalidraw fonts installed, depending on your SVG viewer and exporter options.
 
 3. Install [excalidraw](https://www.excalidraw.com) as a PWA using Chrome. After doing this, you should be able to launch excalidraw from your system as if it was an application.
 
@@ -83,4 +85,4 @@ This does 2 things:
 2. Inserts a link to this file with a custom `excalidraw:` type. The `excalidraw:` link type both displays the image inline and will open the drawing in excalidraw for editing when followed.
 
 
-As long as `excalidraw_export` is available and configured correctly, all changes saved in the excalidraw application will update the corresponding svg files.
+As long as `excalirender` is available and configured correctly, all changes saved in the excalidraw application will update the corresponding svg files.

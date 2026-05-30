@@ -15,9 +15,9 @@
             :to-equal
             "xdg-open home/excalidraw\\ drawings/my-drawing.excalidraw"))
 
-  (it "formats a command compatible with excalidraw_export"
+  (it "formats a command compatible with excalirender"
     (expect (org-excalidraw--shell-cmd-to-svg excal-path) :to-equal
-            "excalidraw_export --rename_fonts=true \"home/excalidraw drawings/my-drawing.excalidraw\"")))
+            "excalirender home/excalidraw\\ drawings/my-drawing.excalidraw -o home/excalidraw\\ drawings/my-drawing.excalidraw.svg")))
 
 (describe
   "checks external dependencies on initialization"
